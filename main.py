@@ -4,6 +4,8 @@ import os
 
 class textnotes:
 
+	currentFilename = "Untitled"
+	
     @staticmethod
     def quit_app(event=None):
         root.quit()
@@ -11,7 +13,7 @@ class textnotes:
     def open_file(self, event=None):
 
         txt_file = tkinter.filedialog.askopenfilename(parent=root, initialdir = os.path.expanduser('~/Desktop'), title = "Select a text file",filetypes = (("Text Documents","*.txt"),("All Files","*.*")))
-		
+		self.currentFilename = txt_file
         if txt_file:
             self.text_area.delete('1.0', END);
             with open(txt_file) as _file:
@@ -19,10 +21,20 @@ class textnotes:
                 root.update_idletasks()
 
     def save_file(self, event=None):
+		with open(self.currentFilename, 'w') as file:
+			data = self.text_area.get('1.0', END + '-1c')
+			file.write(data)
+			file.close()
+
+    def save_as_file(self, event=None):
         file = tkinter.filedialog.asksaveasfile(mode='w',initialdir = "/",title = "Save file as...",defaultextension= '.txt' ,filetypes = (("Text Documents","*.txt"),("All files","*.*")))
 
         if file != None:
             data = self.text_area.get('1.0', END + '-1c')
+			
+			#get saved as text documents' location
+            self.currentFilename = file.name
+			
             file.write(data)
             file.close()
 
@@ -52,6 +64,7 @@ class textnotes:
 
         file_menu.add_command(label="Open", accelerator='Ctrl+O', command=self.open_file)
         file_menu.add_command(label="Save", accelerator='Ctrl+S', command=self.save_file)
+        file_menu.add_command(label="Save as...", accelerator='Ctrl+Alt+S', command=self.save_as_file)
 
         file_menu.add_separator()
 
@@ -60,7 +73,8 @@ class textnotes:
         the_menu.add_cascade(label="File", menu = file_menu)
 		
 		root.bind("<Command-s>", self.save_file)
-        root.bind("<Command-o>", self.open_file
+        root.bind("<Command-Alt-s>", self.save_as_file)
+        root.bind("<Command-o>", self.open_file)
 		
         root.config(menu=the_menu)
 
