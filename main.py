@@ -19,14 +19,12 @@ class textnotes:
                 root.update_idletasks()
 
     def save_file(self, event=None):
-        file = tkinter.filedialog.asksaveasfile(mode='w',initialdir = "/")
+        file = tkinter.filedialog.asksaveasfile(mode='w',initialdir = "/",title = "Save file as...",defaultextension= '.txt' ,filetypes = (("Text Documents","*.txt"),("All files","*.*")))
 
         if file != None:
             data = self.text_area.get('1.0', END + '-1c')
             file.write(data)
             file.close()
-
-
 
     def __init__(self, root):
         root.title("Untitled - textnotes")
@@ -52,14 +50,17 @@ class textnotes:
 
         file_menu = Menu(the_menu, tearoff=0)
 
-        file_menu.add_command(label="Open", command=self.open_file)
-        file_menu.add_command(label="Save", command=self.save_file)
+        file_menu.add_command(label="Open", accelerator='Ctrl+O', command=self.open_file)
+        file_menu.add_command(label="Save", accelerator='Ctrl+S', command=self.save_file)
 
         file_menu.add_separator()
 
         file_menu.add_command(label="Quit", command=self.quit_app)
 
         the_menu.add_cascade(label="File", menu = file_menu)
+		
+		root.bind("<Command-s>", self.save_file)
+        root.bind("<Command-o>", self.open_file
 		
         root.config(menu=the_menu)
 
