@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter.filedialog
+import os
 
 class textnotes:
 
@@ -9,7 +10,7 @@ class textnotes:
 
     def open_file(self, event=None):
 
-        txt_file = tkinter.filedialog.askopenfilename(parent=root, initialdir = '/')
+        txt_file = tkinter.filedialog.askopenfilename(parent=root, initialdir = os.path.expanduser('~/Desktop'), title = "Select a text file",filetypes = (("Text Documents","*.txt"),("All Files","*.*")))
 		
         if txt_file:
             self.text_area.delete('1.0', END);
