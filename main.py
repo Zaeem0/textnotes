@@ -4,8 +4,8 @@ import os
 
 class textnotes:
 
-	currentFilename = "Untitled"
-	
+    currentFilename = "Untitled"
+
     @staticmethod
     def quit_app(event=None):
         root.quit()
@@ -13,33 +13,44 @@ class textnotes:
     def open_file(self, event=None):
 
         txt_file = tkinter.filedialog.askopenfilename(parent=root, initialdir = os.path.expanduser('~/Desktop'), title = "Select a text file",filetypes = (("Text Documents","*.txt"),("All Files","*.*")))
-		self.currentFilename = txt_file
         if txt_file:
+
             self.text_area.delete('1.0', END);
+            self.currentFilename = txt_file
             with open(txt_file) as _file:
                 self.text_area.insert('1.0', _file.read())
+                self.currentFilename = txt_file
+                self.change_title()
                 root.update_idletasks()
 
+    def change_title(self, event=None):
+        root.title(str(self.currentFilename) + " - textnotes")
+
     def save_file(self, event=None):
-		with open(self.currentFilename, 'w') as file:
-			data = self.text_area.get('1.0', END + '-1c')
-			file.write(data)
-			file.close()
+        if self.currentFilename == "Untitled":
+            self.save_as_file()
+
+        else:
+            with open(self.currentFilename, 'w') as file:
+                data = self.text_area.get('1.0', END + '-1c')
+                file.write(data)
+                file.close()
 
     def save_as_file(self, event=None):
         file = tkinter.filedialog.asksaveasfile(mode='w',initialdir = "/",title = "Save file as...",defaultextension= '.txt' ,filetypes = (("Text Documents","*.txt"),("All files","*.*")))
 
         if file != None:
             data = self.text_area.get('1.0', END + '-1c')
-			
-			#get saved as text documents' location
             self.currentFilename = file.name
-			
+            self.change_title()
             file.write(data)
             file.close()
 
+
+
     def __init__(self, root):
-        root.title("Untitled - textnotes")
+        
+		root.title("Untitled - textnotes")
 
         root.geometry("600x500")
 
@@ -71,8 +82,8 @@ class textnotes:
         file_menu.add_command(label="Quit", command=self.quit_app)
 
         the_menu.add_cascade(label="File", menu = file_menu)
-		
-		root.bind("<Command-s>", self.save_file)
+
+        root.bind("<Command-s>", self.save_file)
         root.bind("<Command-Alt-s>", self.save_as_file)
         root.bind("<Command-o>", self.open_file)
 		
